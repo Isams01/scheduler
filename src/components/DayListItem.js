@@ -4,7 +4,7 @@ import "components/DayListItem.scss";
 
 export default function DayListItem(props) {
   let listClass = classNames({
-    "day-list__item":!(props.selected && props.spots === 0), 
+    "day-list__item": true, 
     "day-list__item--selected": props.selected, 
     "day-list__item--full": (props.spots === 0)
   })
