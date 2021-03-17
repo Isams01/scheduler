@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 
+import "components/Appointment"
 import "components/Application.scss";
 import DayList from "components/DayList"
+import Appointment from "components/Appointment";
 
 export default function Application(props) {
   const days = [
@@ -23,6 +25,59 @@ export default function Application(props) {
   ];
 
   const [day, setDay] = useState("Monday");
+
+  const appointments = [
+    {
+      id: 1,
+      time: "12pm",
+    },
+    {
+      id: 2,
+      time: "1pm",
+      interview: {
+        student: "Lydia Miller-Jones",
+        interviewer: {
+          id: 1,
+          name: "Sylvia Palmer",
+          avatar: "https://i.imgur.com/LpaY82x.png",
+        }
+      }
+    },
+    {
+      id: 3,
+      time: "2pm",
+      interview: {
+        student: "Alice the Cat",
+        interviewer: {
+          id: 1,
+          name: "Sven Jones",
+          avatar: "https://i.imgur.com/twYrpay.jpg",
+        }
+      }
+    },
+    {
+      id: 4,
+      time: "3pm",
+      interview: {
+        student: "Lydia Miller-Jones",
+        interviewer: {
+          id: 1,
+          name: "Mildred Nazir",
+          avatar: "https://i.imgur.com/T2WwVfS.png",
+        }
+      }
+    },
+    {
+      id: 4,
+      time: "4pm",
+    }
+  ];
+  
+  const appointmentsList = appointments.map(appointment => {
+    return <Appointment key={appointment.id} {...appointment}/> 
+  })
+
+  appointmentsList.push(<Appointment key="last" time="5pm" />);
 
   return (
     <main className="layout">
@@ -47,7 +102,7 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
-        {/* Replace this with the schedule elements durint the "The Scheduler" activity. */}
+        {appointmentsList}
       </section>
     </main>
   );
