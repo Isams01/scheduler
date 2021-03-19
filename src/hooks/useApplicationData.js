@@ -9,6 +9,11 @@ export default function Application(props) {
     interviewers: {}
   });
 
+  function getDay(state) {
+    const currentDay = state.days.find(day => day.name===state.day)
+    return currentDay;
+  }
+
   useEffect(() => {
     const requests = {
       "GET_DAYS": "http://localhost:8001/api/days",
@@ -25,9 +30,6 @@ export default function Application(props) {
         const interviewers = responses[2].data;
 
         setState(prev => ({...prev, days: days, appointments: appointments, interviewers: interviewers }));
-
-        // setDays(days);
-        // setAppointments(appointments)
       })
     );
   },[])
@@ -39,7 +41,12 @@ export default function Application(props) {
         ...state.appointments[id],
         interview: { ...interview }
       };
-  
+
+      const day = {...getDay(state)};
+      day['spots'] = day['spots'] - 1;
+      const days = [...state.days];
+      days[days.findIndex(element => element.id === day.id)] = day; 
+
       const appointments = {
         ...state.appointments,
         [id]: appointment
@@ -47,7 +54,8 @@ export default function Application(props) {
       
       setState({
         ...state, 
-        appointments
+        appointments,
+        days
       });
       resolve(res);
     })
@@ -67,6 +75,11 @@ export default function Application(props) {
         interview: null
       };
   
+      const day = {...getDay(state)};
+      day['spots'] = day['spots'] + 1;
+      const days = [...state.days];
+      days[days.findIndex(element => element.id === day.id)] = day; 
+
       const appointments = {
         ...state.appointments,
         [id]: appointment
@@ -74,7 +87,8 @@ export default function Application(props) {
       
       setState({
         ...state, 
-        appointments
+        appointments,
+        days
       });
       resolve(res);
     })
