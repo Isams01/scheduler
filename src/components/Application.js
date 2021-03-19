@@ -15,8 +15,6 @@ export default function Application(props) {
     interviewers: {}
   });
 
-
-
   useEffect(() => {
     const requests = {
       "GET_DAYS": "http://localhost:8001/api/days",
@@ -39,11 +37,59 @@ export default function Application(props) {
       })
     );
   },[])
+
+  function bookInterview(id, interview) {
+    return new Promise ((resolve, reject) => {
+    axios.put(`/api/appointments/${id}`, {interview}).then(res => {
+      const appointment = {
+        ...state.appointments[id],
+        interview: { ...interview }
+      };
+  
+      const appointments = {
+        ...state.appointments,
+        [id]: appointment
+      };
+      
+      setState({
+        ...state, 
+        appointments
+      });
+      resolve(res);
+    })
+    .catch(err => reject(err));
+    });
+  };
+
+  function deleteInterview(id) {
+    return new Promise ((resolve, reject) => {
+    axios.delete(`/api/appointments/${id}`).then(res => {
+      const appointment = {
+        ...state.appointments[id],
+        interview: null
+      };
+  
+      const appointments = {
+        ...state.appointments,
+        [id]: appointment
+      };
+      
+      setState({
+        ...state, 
+        appointments
+      });
+      resolve(res);
+    })
+    .catch(err => reject(err));
+    });
+  };
+  
+  
+
   const dailyAppointments = getAppointmentsForDay(state, state.day);
   const daysInterviewers = getInterviewersForDay(state, state.day);
   const appointmentsList = dailyAppointments.map(appointment => {
-    const interview = getInterview(state, appointment.interview);
-    console.log(state);
+  const interview = getInterview(state, appointment.interview);
     return (
       <Appointment
         key={appointment.id}
@@ -51,6 +97,8 @@ export default function Application(props) {
         time={appointment.time}
         interview={interview}
         interviewers={daysInterviewers}
+        bookInterview={bookInterview}
+        deleteInterview={deleteInterview}
       /> 
     )
   })
