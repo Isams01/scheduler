@@ -30,12 +30,14 @@ export default function Appointment(props) {
     };
 
     transition(SAVING);
+    props.bookInterview(props.id, interview, mode)
+    .then(res => {
+      transition(SHOW);
+    })
+    .catch(error => {transition(ERROR_SAVE, true)});
+    
+    
 
-    props.bookInterview(props.id, interview)
-      .then(res => {
-        transition(SHOW);
-      })
-      .catch(error => {transition(ERROR_SAVE, true)});
   }
 
   function deleteInterviewItem() {
@@ -56,7 +58,7 @@ export default function Appointment(props) {
 
 
   return (
-    <article className="appointment">
+    <article className="appointment" data-testid="appointment">
       <Header time={props.time}/>
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
       {mode === SHOW && (
