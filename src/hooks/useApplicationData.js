@@ -16,37 +16,43 @@ export default function useApplicationData(props) {
 
   useEffect(() => {
     const requests = {
-      "GET_DAYS": "http://localhost:8001/api/days",
-      "GET_APPOINTMENTS": "http://localhost:8001/api/appointments",
-      "GET_INTERVIEWERS": "http://localhost:8001/api/interviewers"
+      "GET_DAYS": "/api/days",
+      "GET_APPOINTMENTS": "/api/appointments",
+      "GET_INTERVIEWERS": "/api/interviewers"
     }
     const daysRequest = axios.get(requests.GET_DAYS);
     const appointmentsRequest = axios.get(requests.GET_APPOINTMENTS);
     const interviewsRequest = axios.get(requests.GET_INTERVIEWERS);
-    axios.all([daysRequest, appointmentsRequest, interviewsRequest])
-      .then(axios.spread((...responses) => {
+    Promise.all([daysRequest, appointmentsRequest, interviewsRequest])
+      .then((responses) => {
         const days = responses[0].data;
         const appointments = responses[1].data;
         const interviewers = responses[2].data;
-
         setState(prev => ({...prev, days: days, appointments: appointments, interviewers: interviewers }));
       })
-    );
   },[])
 
-  function bookInterview(id, interview) {
+  function bookInterview(id, interview, mode) {
     return new Promise ((resolve, reject) => {
     axios.put(`/api/appointments/${id}`, {interview}).then(res => {
       const appointment = {
         ...state.appointments[id],
         interview: { ...interview }
       };
+      let day;
+      let days;
 
-      const day = {...getDay(state)};
-      day['spots'] = day['spots'] - 1;
-      const days = [...state.days];
-      days[days.findIndex(element => element.id === day.id)] = day; 
-
+      if(mode !== "EDIT") {
+        day = {...getDay(state)};
+        day['spots'] = day['spots'] - 1;
+        days = [...state.days];
+        days[days.findIndex(element => element.id === day.id)] = day; 
+      } else {
+        day = {...getDay(state)};
+        days = [...state.days];
+        days[days.findIndex(element => element.id === day.id)] = day;
+      }
+      
       const appointments = {
         ...state.appointments,
         [id]: appointment
