@@ -1,24 +1,27 @@
 import React from "react";
-import "components/Appointment"
+import "components/Appointment";
 import "components/Application.scss";
-import DayList from "components/DayList"
+import DayList from "components/DayList";
 import Appointment from "components/Appointment";
-import { getAppointmentsForDay, getInterviewersForDay, getInterview } from '../helpers/selectors'
+import {
+  getAppointmentsForDay,
+  getInterviewersForDay,
+  getInterview,
+} from "../helpers/selectors";
 import useApplicationData from "../hooks/useApplicationData";
 
 export default function Application(props) {
-
   const {
     state,
     setDay,
     bookInterview,
-    deleteInterview
+    deleteInterview,
   } = useApplicationData();
 
   const dailyAppointments = getAppointmentsForDay(state, state.day);
   const daysInterviewers = getInterviewersForDay(state, state.day);
-  const appointmentsList = dailyAppointments.map(appointment => {
-  const interview = getInterview(state, appointment.interview);
+  const appointmentsList = dailyAppointments.map((appointment) => {
+    const interview = getInterview(state, appointment.interview);
     return (
       <Appointment
         key={appointment.id}
@@ -28,9 +31,9 @@ export default function Application(props) {
         interviewers={daysInterviewers}
         bookInterview={bookInterview}
         deleteInterview={deleteInterview}
-      /> 
-    )
-  })
+      />
+    );
+  });
 
   appointmentsList.push(<Appointment key="last" time="5pm" />);
 
@@ -44,11 +47,11 @@ export default function Application(props) {
         />
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
-        <DayList
-          days={state.days}
-          day={state.day}
-          setDay={day => setDay(day)}
-        />
+          <DayList
+            days={state.days}
+            day={state.day}
+            setDay={(day) => setDay(day)}
+          />
         </nav>
         <img
           className="sidebar__lhl sidebar--centered"
@@ -56,9 +59,7 @@ export default function Application(props) {
           alt="Lighthouse Labs"
         />
       </section>
-      <section className="schedule">
-        {appointmentsList}
-      </section>
+      <section className="schedule">{appointmentsList}</section>
     </main>
   );
 }
