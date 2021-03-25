@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export default function Show(props) {
   return (
@@ -7,7 +7,7 @@ export default function Show(props) {
         <h2 className="text--regular">{props.student}</h2>
         <section className="interviewer">
           <h4 className="text--light">Interviewer</h4>
-  <h3 className="text--regular">{props.interviewer}</h3>
+          <h3 className="text--regular">{props.interviewer}</h3>
         </section>
       </section>
       <section className="appointment__card-right">
@@ -22,7 +22,9 @@ export default function Show(props) {
             className="appointment__actions-button"
             src="images/trash.png"
             alt="Delete"
-            onClick={() => {props.onDelete()}}
+            onClick={() => {
+              props.onDelete();
+            }}
           />
         </section>
       </section>
